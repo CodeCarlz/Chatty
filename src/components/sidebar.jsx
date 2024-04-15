@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { ImExit } from "react-icons/im";
+import { LogOut } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -9,7 +9,7 @@ const Sidebar = () => {
         <Image src="/boys.png" alt="a" width={100} height={100} />
       </div>
       <div>
-        <ImExit size="30" className="text-white" />
+        <LogOut size="30" className="text-white" />
       </div>
     </div>
   );

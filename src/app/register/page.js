@@ -2,8 +2,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { FaRegUser, FaLock, FaLockOpen } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
+import { KeyRound, Eye, UserRound, Mail } from "lucide-react";
 import api from "@/utils/api";
 
 const Page = () => {
@@ -70,7 +69,7 @@ const Page = () => {
                 <label htmlFor="" className="absolute -top-4 left-0 text-sm">
                   Username
                 </label>
-                <FaRegUser className="text-gray-500" />
+                <UserRound className="text-gray-500" />
                 <input
                   type="text"
                   name="name"
@@ -86,7 +85,7 @@ const Page = () => {
                 <label htmlFor="" className="absolute -top-4 left-0 text-sm">
                   Email
                 </label>
-                <MdEmail className="text-gray-500 size-5" />
+                <Mail className="text-gray-500 size-5" />
                 <input
                   type="email"
                   name="email"
@@ -103,18 +102,18 @@ const Page = () => {
                   Password
                 </label>
                 {showPassword ? (
-                  <FaLockOpen
+                  <Eye
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 ) : (
-                  <FaLock
+                  <KeyRound
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 )}
                 <input
-                  type="text"
+                  type={!showPassword ? "password" : "text"}
                   minLength={"8"}
                   name="password"
                   required
@@ -130,18 +129,18 @@ const Page = () => {
                   Confirm Password
                 </label>
                 {showPassword ? (
-                  <FaLockOpen
+                  <Eye
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 ) : (
-                  <FaLock
+                  <KeyRound
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 )}
                 <input
-                  type="text"
+                  type={!showPassword ? "password" : "text"}
                   minLength={"8"}
                   name="confirmPassword"
                   required

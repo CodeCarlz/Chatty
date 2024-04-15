@@ -1,14 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  FaRegUser,
-  FaLock,
-  FaFacebookF,
-  FaTwitter,
-  FaGoogle,
-  FaLockOpen,
-} from "react-icons/fa";
+import { KeyRound, Eye, UserRound } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import api from "@/utils/api";
 import { useRouter } from "next/navigation";
@@ -73,7 +66,7 @@ export default function Home() {
                 <label htmlFor="" className="absolute -top-4 left-0 text-sm">
                   Username
                 </label>
-                <FaRegUser className="text-gray-500" />
+                <UserRound className="text-gray-500" />
                 <input
                   type="email"
                   name="email"
@@ -90,12 +83,12 @@ export default function Home() {
                   Password
                 </label>
                 {showPassword ? (
-                  <FaLockOpen
+                  <Eye
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
                 ) : (
-                  <FaLock
+                  <KeyRound
                     className="text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   />
