@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { KeyRound, Eye, UserRound, Mail } from "lucide-react";
-import api from "@/utils/api";
+import api, { axiosInstance } from "@/utils/api";
 
 const Page = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +26,7 @@ const Page = () => {
 
   const signupHandler = async () => {
     try {
-      const response = await api.post("/api/v1/auth/register", signUpDetails);
+      const response = await axiosInstance.post("auth/register", signUpDetails);
       if (response.status == 201) {
         toast.success(response.data.message);
         console.log("asd");
