@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { KeyRound, Eye, UserRound } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import api from "@/utils/api";
+import api, { axiosInstance } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
     const loading = toast.loading("Checking For Credentials");
     setIsLoading(true);
     try {
-      const response = await api.post("/api/v1/auth/login", loginDetails);
+      const response = await axiosInstance.post("auth/login", loginDetails);
       console.log(response);
 
       if (response.status === 200) {
