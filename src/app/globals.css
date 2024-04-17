@@ -198,3 +198,56 @@ body {
 .customScroll::-webkit-scrollbar {
   display: none;
 }
+
+
+
+.chatContainerMiddle {
+  background: linear-gradient(
+    to bottom,
+    rgb(239, 254, 255),
+    rgb(255, 242, 252)
+  );
+  flex-direction: column-reverse;
+  display: flex;
+  padding-top: 3.5rem;
+  justify-content: end;
+  overflow: scroll;
+  /* max-height: 80vh; */
+  /* height: 80vh; */
+  position: absolute;
+  top: 70px;
+  bottom: 70px;
+  left: 0;
+  right: 0;
+}
+
+.chatContainerMiddle::-webkit-scrollbar {
+  display: none;
+}
+.myMessage {
+  font-size: 16px;
+  word-wrap: break-word;
+  width: auto;
+  max-width: 60ch;
+  display: inline-block;
+  align-self: flex-end;
+  white-space: pre-wrap;
+  background-color: rgb(207, 251, 255);
+  padding: 5px 10px;
+  border-radius: 1.2rem;
+  margin: 10px 10px 10px 0;
+}
+
+.friendMessage {
+  font-size: 16px;
+  word-wrap: break-word;
+  width: auto;
+  max-width: 60ch;
+  display: inline-block;
+  align-self: flex-start;
+  white-space: pre-wrap;
+  background-color: rgb(255, 222, 251);
+  padding: 5px 10px;
+  border-radius: 1.2rem;
+  margin: 10px 0 10px 10px;
+}
