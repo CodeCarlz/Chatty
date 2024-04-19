@@ -10,25 +10,48 @@ import {
 } from "lucide-react";
 import { axiosInstance } from "@/utils/api";
 import { all } from "axios";
+import Message from "./message";
+import EmojiPicker from "emoji-picker-react";
+import { Erica_One } from "next/font/google";
 
 const Messages = ({ userId, user }) => {
   const [allMessages, setAllMessages] = useState([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [sentMessage, setSentMessage] = useState("");
 
-  const getAllMessage = async (id) => {
-    const response = await axiosInstance.get(`messages/${id}`);
+  const getAllMessage = async (userId) => {
+    const response = await axiosInstance.get(`messages/${userId}`);
     try {
       setAllMessages(response.data.data);
     } catch (error) {}
   };
 
- 
+  const sendMessage = async (userId, message) => {
+    try {
+      const response = await axiosInstance.post(`messages/${userId}`, {
+        content: message,
+      });
+      console.log(response.data.data);
+      setAllMessages((allMessages) => [response.data.data, ...allMessages]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await sendMessage(userId, sentMessage);
+    setSentMessage("");
+  };
+
   useEffect(() => {
     if (userId) {
       getAllMessage(userId);
     }
   }, [userId]);
+
   return (
-    <div className="bg-white h-full w-full rounded-3xl grid grid-rows-[100px_1fr_90px] overflow-hidden">
+    <div className="bg-white h-full w-full rounded-3xl grid grid-rows-[100px_1fr_90px] overflow-hidden shadow-[0px_4px_5px_2px_#32eed555] ">
       {/* Profile Container */}
       <div className=" flex flex-col ">
         <div className="flex flex-1">
@@ -60,24 +83,22 @@ const Messages = ({ userId, user }) => {
       </div>
 
       {/* Chat Container */}
-      <div className="customScroll flex flex-col-reverse overflow-y-auto ">
+      <div className="customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10">
         {allMessages.map((allMessage) =>
           allMessage.sender._id != user._id ? (
-            <p key={allMessage._id} className="friendMessage">
-              {allMessage?.content}
-            </p>
+            <div key={allMessage._id}>
+              <Message allMessage={allMessage} />
+            </div>
           ) : (
-            <p key={allMessage._id} className="myMessage">
-              {allMessage?.content}
-            </p>
+            <div key={allMessage._id}>
+              <Message allMessage={allMessage} />
+            </div>
           )
         )}
-        {/* <p className="myMessage">Yes?</p>
-        <p className="friendMessage">Hello</p> */}
       </div>
 
       {/* Send container */}
-      <div className=" flex items-center px-5 gap-5">
+      <form className=" flex items-center px-5 gap-5" onSubmit={handleSubmit}>
         <div className=" flex items-center flex-1">
           <div className="flex items-center justify-center flex-1 bg-[#dcecfc] h-[70px] rounded-2xl">
             <button>
@@ -88,17 +109,30 @@ const Messages = ({ userId, user }) => {
                 type="text"
                 placeholder="Type Your Message Here..."
                 className="w-full h-full px-3 outline-none text-lg bg-transparent placeholder-gray-500"
+                value={sentMessage}
+                onChange={(e) => setSentMessage(e.target.value)}
               />
             </div>
-            <button>
-              <Smile size={30} className="mx-5" />
-            </button>
+
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  setShowEmojiPicker(!showEmojiPicker);
+                  e.preventDefault();
+                }}
+              >
+                <Smile size={30} className="mx-5" />
+              </button>
+              <div className="absolute bottom-10 right-12  bg-red-500 transition ease-in  ">
+                {showEmojiPicker && <EmojiPicker />}
+              </div>
+            </div>
           </div>
         </div>
         <button className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl">
           <SendHorizontal size={40} className="text-white" />
         </button>
-      </div>
+      </form>
     </div>
   );
 };

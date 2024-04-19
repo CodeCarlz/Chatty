@@ -2,16 +2,14 @@
 import React, { useEffect, useState } from "react";
 import Chat from "@/components/chat";
 import Sidebar from "@/components/sidebar";
-import Messages from "@/components/messages";
+import Messages from "@/components/messagesContainer";
 import { UserProvider, useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
-
 
 const Page = () => {
   const { user } = useUser();
   const [allChat, setAllchat] = useState([]);
   const [userId, setUserId] = useState(null);
-
 
   const getAllChatHandler = async () => {
     try {
@@ -33,7 +31,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="relative  flex justify-center items-center h-[100vh] w-screen">
+      <div className="bg-[#EFF6FC] relative  flex justify-center items-center h-[100vh] w-screen">
         <div className="context z-10  h-screen w-screen flex justify-center items-center gap-8 py-10 px-24">
           <Sidebar />
           <Chat

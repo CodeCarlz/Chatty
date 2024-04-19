@@ -6,15 +6,13 @@ import PeopleCard from "./peoplecard";
 import { all } from "axios";
 
 const Chat = ({ allchat, user, onUserIdChange }) => {
-  const [userId, setUserId] = useState();
-
   const handeClick = (id) => {
-    setUserId(id);
-    onUserIdChange(userId);
+    onUserIdChange(id);
   };
+
   return (
-    <div className=" h-full w-[650px]  flex flex-col gap-5">
-      <div className="bg-white h-[60px] min-h-[60px] rounded-3xl flex items-center px-5">
+    <div className="  h-full w-[650px]  flex flex-col gap-5">
+      <div className="bg-white h-[60px] min-h-[60px] rounded-3xl flex items-center px-5 shadow-[0px_4px_5px_2px_#32eed555] ">
         <Search size="30" className="text-gray-500" />
         <input
           type="text"
@@ -22,11 +20,11 @@ const Chat = ({ allchat, user, onUserIdChange }) => {
           placeholder="Search"
         />
       </div>
-      <div className="bg-white h-[300px] max-h-[300px] rounded-3xl flex flex-col p-5">
+      <div className="bg-white h-[300px] max-h-[300px] rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
         <h1 className="text-2xl font-semibold">Groups</h1>
         <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll"></div>
       </div>
-      <div className="bg-white h-[475px] rounded-3xl flex flex-col p-5">
+      <div className="bg-white h-[470px] rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
         <h1 className="text-2xl font-semibold">People</h1>
         <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll">
           {allchat.map((chat) => (

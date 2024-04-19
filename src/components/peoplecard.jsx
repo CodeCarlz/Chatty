@@ -2,8 +2,6 @@ import React from "react";
 import Image from "next/image";
 
 const PeopleCard = ({ chat, user }) => {
- 
-
   const participantNames = chat.participants
     .filter((participant) => participant._id !== user._id)
     .map((participantName) => (
@@ -17,7 +15,6 @@ const PeopleCard = ({ chat, user }) => {
     hour12: true,
   });
 
-  
   return (
     <div className=" max-w-[400px] flex  items-center gap-3">
       <div className=" h-[40px] w-[40px] rounded-full overflow-hidden">
@@ -26,7 +23,9 @@ const PeopleCard = ({ chat, user }) => {
       <div className=" flex justify-between w-[330px]">
         <div className="text-gray-700  text-start">
           <h1 className="font-semibold">{participantNames}</h1>
-          <p className="text-gray-400">{chat.lastMessage.content}</p>
+          <p className="text-gray-400 text-ellipsis line-clamp-1 max-w-48">
+            {chat.lastMessage.content}
+          </p>
         </div>
         <div>
           <p className="text-sm text-gray-500 pt-1">{formattedDate}</p>
