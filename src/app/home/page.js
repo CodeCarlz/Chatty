@@ -10,6 +10,7 @@ const Page = () => {
   const { user } = useUser();
   const [allChat, setAllchat] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllChatHandler = async () => {
     try {
@@ -20,11 +21,6 @@ const Page = () => {
     }
   };
 
-  const handleUserIdChange = (userId) => {
-    setUserId(userId);
-  };
-
-  console.log(userId);
   useEffect(() => {
     getAllChatHandler();
   }, []);
@@ -34,12 +30,8 @@ const Page = () => {
       <div className="bg-[#EFF6FC] relative  flex justify-center items-center h-[100vh] w-screen">
         <div className="context z-10  h-screen w-screen flex justify-center items-center gap-8 py-10 px-24">
           <Sidebar />
-          <Chat
-            allchat={allChat}
-            user={user}
-            onUserIdChange={handleUserIdChange}
-          />
-          <Messages allchat={allChat} userId={userId} user={user} />
+          <Chat allchat={allChat} onUserIdChange={setUserId} />
+          <Messages allchat={allChat} userId={userId} />
         </div>
 
         <div className="area absolute">

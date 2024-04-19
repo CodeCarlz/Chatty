@@ -1,15 +1,9 @@
 "use client";
-import Image from "next/image";
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import PeopleCard from "./peoplecard";
-import { all } from "axios";
 
-const Chat = ({ allchat, user, onUserIdChange }) => {
-  const handeClick = (id) => {
-    onUserIdChange(id);
-  };
-
+const Chat = ({ allchat, onUserIdChange }) => {
   return (
     <div className="  h-full w-[650px]  flex flex-col gap-5">
       <div className="bg-white h-[60px] min-h-[60px] rounded-3xl flex items-center px-5 shadow-[0px_4px_5px_2px_#32eed555] ">
@@ -31,9 +25,9 @@ const Chat = ({ allchat, user, onUserIdChange }) => {
             <button
               className=""
               key={chat._id}
-              onClick={() => handeClick(chat._id)}
+              onClick={() => onUserIdChange(chat._id)}
             >
-              <PeopleCard chat={chat} user={user} key={chat._id} />
+              <PeopleCard chat={chat} />
             </button>
           ))}
         </div>

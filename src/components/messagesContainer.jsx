@@ -1,40 +1,51 @@
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import {
-  Phone,
-  Video,
-  EllipsisVertical,
-  SendHorizontal,
-  Paperclip,
-  Smile,
-} from "lucide-react";
+import { useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
-import { all } from "axios";
-import Message from "./message";
 import EmojiPicker from "emoji-picker-react";
-import { Erica_One } from "next/font/google";
+import {
+  EllipsisVertical,
+  Loader2,
+  Paperclip,
+  Phone,
+  SendHorizontal,
+  Smile,
+  Video,
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import Message from "./message";
+import { Button } from "./ui/button";
 
-const Messages = ({ userId, user }) => {
+const Messages = ({ userId }) => {
+  const { user } = useUser();
   const [allMessages, setAllMessages] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [sentMessage, setSentMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const getAllMessage = async (userId) => {
-    const response = await axiosInstance.get(`messages/${userId}`);
+    setLoading(true);
     try {
+      const response = await axiosInstance.get(`messages/${userId}`);
       setAllMessages(response.data.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const sendMessage = async (userId, message) => {
+    setIsSending(true);
     try {
       const response = await axiosInstance.post(`messages/${userId}`, {
         content: message,
       });
-      console.log(response.data.data);
       setAllMessages((allMessages) => [response.data.data, ...allMessages]);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -84,16 +95,22 @@ const Messages = ({ userId, user }) => {
 
       {/* Chat Container */}
       <div className="customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10">
-        {allMessages.map((allMessage) =>
-          allMessage.sender._id != user._id ? (
-            <div key={allMessage._id}>
-              <Message allMessage={allMessage} />
-            </div>
-          ) : (
-            <div key={allMessage._id}>
-              <Message allMessage={allMessage} />
-            </div>
-          )
+        {!loading &&
+          allMessages.map((allMessage) =>
+            allMessage.sender._id != user._id ? (
+              <div key={allMessage._id}>
+                <Message allMessage={allMessage} />
+              </div>
+            ) : (
+              <div key={allMessage._id}>
+                <Message allMessage={allMessage} />
+              </div>
+            )
+          )}
+        {loading && (
+          <div className="grid place-items-center">
+            <Loader2 size={40} className="animate-spin text-primary" />
+          </div>
         )}
       </div>
 
@@ -129,8 +146,15 @@ const Messages = ({ userId, user }) => {
             </div>
           </div>
         </div>
-        <button className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl">
-          <SendHorizontal size={40} className="text-white" />
+        <button
+          type="submit"
+          className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl"
+        >
+          {isSending ? (
+            <Loader2 size={40} className="text-white animate-spin" />
+          ) : (
+            <SendHorizontal size={40} className="text-white" />
+          )}
         </button>
       </form>
     </div>

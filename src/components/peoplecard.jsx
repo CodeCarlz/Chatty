@@ -1,7 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import { useUser } from "@/context/Usercontext";
 
-const PeopleCard = ({ chat, user }) => {
+const PeopleCard = ({ chat }) => {
+  const { user } = useUser();
+
   const participantNames = chat.participants
     .filter((participant) => participant._id !== user._id)
     .map((participantName) => (
@@ -24,7 +27,7 @@ const PeopleCard = ({ chat, user }) => {
         <div className="text-gray-700  text-start">
           <h1 className="font-semibold">{participantNames}</h1>
           <p className="text-gray-400 text-ellipsis line-clamp-1 max-w-48">
-            {chat.lastMessage.content}
+            {chat?.lastMessage?.content}
           </p>
         </div>
         <div>
