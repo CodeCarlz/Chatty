@@ -7,10 +7,10 @@ import { UserProvider, useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
 
 const Page = () => {
-  const { user } = useUser();
   const [allChat, setAllchat] = useState([]);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [closeChat, setCloseChat] = useState(false);
 
   const getAllChatHandler = async () => {
     try {
@@ -30,8 +30,18 @@ const Page = () => {
       <div className="bg-[#EFF6FC] relative  flex justify-center items-center h-[100vh] w-screen">
         <div className="context z-10  h-screen w-screen flex justify-center items-center gap-8 py-10 px-24">
           <Sidebar />
-          <Chat allchat={allChat} onUserIdChange={setUserId} />
-          <Messages allchat={allChat} userId={userId} />
+          <Chat
+            allchat={allChat}
+            onUserIdChange={setUserId}
+            closeChat={closeChat}
+            setCloseChat={setCloseChat}
+          />
+          <Messages
+            allchat={allChat}
+            userId={userId}
+            closeChat={closeChat}
+            setCloseChat={setCloseChat}
+          />
         </div>
 
         <div className="area absolute">
