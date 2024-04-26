@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   // baseURL: "https://chatapp-backend-alpha.vercel.app",
-  baseURL: "http://chatty.evileyedev.in:5000/api/v1/",
+  baseURL: "http://chatty-backend.evileyedev.in:5000/api/v1/",
   withCredentials: true,
   headers: {
     "Cache-Control": "no-cache",
