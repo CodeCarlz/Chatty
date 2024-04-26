@@ -58,13 +58,17 @@ const Sidebar = () => {
                       />
                     </div>
                   </div>
-                  <div className=" flex flex-col gap-14 text-black font-medium ">
+                  <div className=" flex flex-col gap-3 text-black font-light ">
                     <div className="">
-                      <h1 className="font-semibold text-lg">Your Name</h1>
+                      <h1 className="font-semibold text-sm">Your Name</h1>
                       <p>{user.name}</p>
                     </div>
                     <div className="">
-                      <h1 className="font-semibold text-lg">About</h1>
+                      <h1 className="font-semibold text-sm">user ID</h1>
+                      <p>{user._id}</p>
+                    </div>
+                    <div className="">
+                      <h1 className="font-semibold text-sm">About</h1>
                       <p>Hey there! I am using Chatty.</p>
                     </div>
                   </div>
