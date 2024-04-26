@@ -141,7 +141,13 @@ const Messagescontainer = ({ userId, closeChat, setCloseChat, allchat }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem>Clear Chat</DropdownMenuItem>
                     <DropdownMenuItem>
-                      <button onClick={() => deleteMessageHandler(userId._id)}>
+                      <button
+                        onClick={() => {
+                          deleteMessageHandler(userId._id);
+                          setAllMessages([]);
+                          setCloseChat(false);
+                        }}
+                      >
                         Delete Chat
                       </button>
                     </DropdownMenuItem>
