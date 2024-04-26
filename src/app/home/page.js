@@ -2,16 +2,18 @@
 import React, { useEffect, useState } from "react";
 import Chat from "@/components/chat";
 import Sidebar from "@/components/sidebar";
-import Messages from "@/components/messagesContainer";
+import Messagescontainer from "@/components/messagesContainer";
 import { UserProvider, useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
 
 const Page = () => {
   const [allChat, setAllchat] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [closeChat, setCloseChat] = useState(false);
+  console.log(userId);
 
+  console.log(allChat);
   const getAllChatHandler = async () => {
     try {
       const response = await axiosInstance.get("/chats");
@@ -36,7 +38,7 @@ const Page = () => {
             closeChat={closeChat}
             setCloseChat={setCloseChat}
           />
-          <Messages
+          <Messagescontainer
             allchat={allChat}
             userId={userId}
             closeChat={closeChat}
