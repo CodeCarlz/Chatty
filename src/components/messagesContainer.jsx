@@ -4,6 +4,7 @@ import EmojiPicker from "emoji-picker-react";
 import {
   EllipsisVertical,
   Loader2,
+  MessagesSquare,
   Paperclip,
   Phone,
   SendHorizontal,
@@ -26,7 +27,7 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const Messages = ({ userId, closeChat, setCloseChat }) => {
+const Messagescontainer = ({ userId, closeChat, setCloseChat, allchat }) => {
   const { user } = useUser();
   const [allMessages, setAllMessages] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -47,9 +48,10 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
   };
 
   const sendMessage = async (userId, message) => {
+    console.log(userId);
     setIsSending(true);
     try {
-      const response = await axiosInstance.post(`messages/${userId}`, {
+      const response = await axiosInstance.post(`messages/${userId._id}`, {
         content: message,
       });
       setAllMessages((allMessages) => [response.data.data, ...allMessages]);
@@ -66,24 +68,40 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
     setSentMessage("");
   };
 
+  const deleteMessageHandler = async (chatId) => {
+    try {
+      await axiosInstance.delete(`chats/remove/${chatId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     if (userId) {
-      getAllMessage(userId);
+      console.log(userId);
+      getAllMessage(userId._id);
     }
   }, [userId]);
+
+  console.log(user);
+  console.log(userId);
+  const participantData = userId?.participants?.find(
+    (participant) => participant._id !== user._id
+  );
+  console.log(participantData);
 
   return (
     <div className="bg-white h-full w-full rounded-3xl grid grid-rows-[100px_1fr_90px] overflow-hidden shadow-[0px_4px_5px_2px_#32eed555] ">
       {closeChat ? (
         <>
           {/* Profile Container */}
+          {/* {allMessages.map((messenge, index) => console.log(messenge.sender._id !== user._id ? messenge.sender.avatar.url : null))} */}
           <div className=" flex flex-col ">
             <div className="flex flex-1">
               <div className=" flex flex-1">
                 <div className=" w-[100px] flex justify-end items-center mr-2">
                   <div className=" h-[60px] w-[60px] rounded-full overflow-hidden">
                     <Image
-                      src="/boys.png"
+                      src={participantData?.avatar?.url}
                       height="100"
                       width="100"
                       alt="profile"
@@ -92,12 +110,15 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
                 </div>
                 <div className=" flex items-center flex-1">
                   <div className="">
-                    <h1 className="text-lg font-semibold">Carlz</h1>
+                    <h1 className="text-lg font-semibold">
+                      {participantData?.name}
+                    </h1>
                     <div className="flex gap-2 text-gray-500">
                       <p>
-                        Online <span>-</span>
+                        Online
+                        {/* <span>-</span> */}
                       </p>
-                      <p>Last seen, 2:02pm</p>
+                      {/* <p>Last seen, 2:02pm</p> */}
                     </div>
                   </div>
                 </div>
@@ -119,7 +140,11 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
                       </button>
                     </DropdownMenuItem>
                     <DropdownMenuItem>Clear Chat</DropdownMenuItem>
-                    <DropdownMenuItem>Delete Chat</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <button onClick={() => deleteMessageHandler(userId._id)}>
+                        Delete Chat
+                      </button>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Block</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -186,7 +211,7 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
             </div>
             <button
               type="submit"
-              className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl"
+              className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl shadow-[0px_4px_5px_2px_#32eed555]"
             >
               {isSending ? (
                 <Loader2 size={40} className="text-white animate-spin" />
@@ -197,9 +222,9 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
           </form>
         </>
       ) : (
-        <div className=" h-screen w-full flex flex-col  justify-center items-center gap-10">
-          <div className="h-[400px] w-[400px] rounded-full overflow-hidden">
-            <img src="/boys.png" alt="" className="h-full w-full" />
+        <div className=" h-screen w-full flex flex-col  justify-start pt-10 items-center gap-5">
+          <div className="h-[300px] w-[300px] rounded-full overflow-hidden bg-gray-200 flex justify-center items-center">
+            <MessagesSquare size={200} className="text-gray-500" />
           </div>
           <div className="text-center">
             <h1 className="text-3xl mb-5 ">Chatty Web</h1>
@@ -212,26 +237,4 @@ const Messages = ({ userId, closeChat, setCloseChat }) => {
   );
 };
 
-export default Messages;
-
-<>
-  {/* <div className="chatContainerMiddle">
-    {messages.map((message) =>
-      message.chats
-        .slice()
-        .reverse()
-        .map((chat, index) =>
-          message.name.toLowerCase() == chat.sender.toLowerCase() ? (
-            <p className="myMessage" key={index}>
-              {" "}
-              {chat.Content}
-            </p>
-          ) : (
-            <p className="friendMessage" key={index}>
-              {chat.Content}
-            </p>
-          )
-        )
-    )}
-  </div> */}
-</>;
+export default Messagescontainer;
