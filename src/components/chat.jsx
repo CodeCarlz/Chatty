@@ -31,7 +31,7 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
       );
 
   return (
-    <div className="  h-full w-[650px]  flex flex-col gap-5">
+    <div className="  h-full w-[300px] md:w-[350px] lg:w-[600px]  flex flex-col gap-5">
       <form className="bg-white h-[60px] min-h-[60px] rounded-3xl flex items-center px-5 shadow-[0px_4px_5px_2px_#32eed555] ">
         <button>
           <Search size="30" className="text-gray-500" />
@@ -45,12 +45,12 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
         />
       </form>
       <div className="bg-white h-[300px] max-h-[300px] rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
-        <h1 className="text-2xl font-semibold">Groups</h1>
+        <h1 className="text-sm md:text-lg font-semibold">Groups</h1>
         <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll"></div>
       </div>
       <div className=" h-[470px] max-h-[470px] bg-white rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
         <div className="flex  items-center justify-between ">
-          <h1 className="text-2xl font-semibold">People</h1>
+          <h1 className="text-sm md:text-lg font-semibold">People</h1>
           <StartconversationDialog
             getAllChatHandler={getAllChatHandler}
             onUserIdChange={onUserIdChange}

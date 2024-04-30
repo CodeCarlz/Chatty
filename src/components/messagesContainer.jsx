@@ -104,9 +104,9 @@ const Messagescontainer = ({
           <div className=" flex flex-col ">
             <div className="flex flex-1">
               {participantData ? (
-                <div className=" flex flex-1">
-                  <div className=" w-[100px] flex justify-end items-center mr-2">
-                    <div className=" h-[60px] w-[60px] rounded-full overflow-hidden">
+                <div className=" flex flex-1 pl-5 md:pl-3">
+                  <div className=" w-[45px] md:w-[60px] lg:w-[80px]   flex justify-center items-center  ">
+                    <div className=" h-[40px] w-[40px] md:h-[50px] md:w-[50px] lg:h-[60px] lg:w-[60px] rounded-full overflow-hidden">
                       <Image
                         src={participantData?.avatar?.url}
                         height="100"
@@ -117,11 +117,11 @@ const Messagescontainer = ({
                   </div>
                   <div className=" flex items-center flex-1">
                     <div className="">
-                      <h1 className="text-lg font-semibold">
+                      <h1 className="text-xs md:text-sm lg:text-lg font-semibold whitespace-nowrap ">
                         {participantData?.name}
                       </h1>
                       <div className="flex gap-2 text-gray-500">
-                        <p>
+                        <p className="text-xs md:text-sm">
                           Online
                           {/* <span>-</span> */}
                         </p>
@@ -136,13 +136,22 @@ const Messagescontainer = ({
                 </div>
               )}
 
-              <div className=" flex justify-end items-center pr-10 gap-5 flex-1 text-[#4e54c8]">
-                <Phone size={30} />
-                <Video size={35} />
+              <div className=" flex justify-end items-center pr-2 md:pr-5 lg:pr-10 gap-5 flex-1 text-[#4e54c8]">
+                <Phone
+                  size={30}
+                  className="h-[20px] w-[20px] md:h-[25px] md:w-[25px]"
+                />
+                <Video
+                  size={35}
+                  className="h-[20px] w-[20px] md:h-[25px] md:w-[25px]"
+                />
 
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <EllipsisVertical size={30} />
+                    <EllipsisVertical
+                      size={30}
+                      className="h-[20px] w-[20px] md:h-[25px] md:w-[25px]"
+                    />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -173,7 +182,7 @@ const Messagescontainer = ({
           </div>
 
           {/* Chat Container */}
-          <div className="customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10">
+          <div className="customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10 ">
             {!loading &&
               allMessages.map((allMessage) =>
                 allMessage.sender._id != user._id ? (
@@ -201,13 +210,16 @@ const Messagescontainer = ({
             <div className=" flex items-center flex-1">
               <div className="flex items-center justify-center flex-1 bg-[#dcecfc] h-[70px] rounded-2xl">
                 <button>
-                  <Paperclip size={30} className="mx-5" />
+                  <Paperclip
+                    size={30}
+                    className="mx-2 md:mx-3 lg:mx-5 h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] "
+                  />
                 </button>
                 <div className="flex-1  h-full">
                   <input
                     type="text"
                     placeholder="Type Your Message Here..."
-                    className="w-full h-full px-3 outline-none text-lg bg-transparent placeholder-gray-500"
+                    className="w-full h-full md:px-1  outline-none text-lg bg-transparent placeholder-gray-500 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-lg"
                     value={sentMessage}
                     onChange={(e) => setSentMessage(e.target.value)}
                   />
@@ -220,7 +232,10 @@ const Messagescontainer = ({
                       e.preventDefault();
                     }}
                   >
-                    <Smile size={30} className="mx-5" />
+                    <Smile
+                      size={30}
+                      className="mx-2 h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] "
+                    />
                   </button>
                   <div className="absolute bottom-10 right-12  bg-red-500 transition ease-in  ">
                     {showEmojiPicker && <EmojiPicker />}
@@ -233,9 +248,15 @@ const Messagescontainer = ({
               className="bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] p-3 h-fit rounded-2xl shadow-[0px_4px_5px_2px_#32eed555]"
             >
               {isSending ? (
-                <Loader2 size={40} className="text-white animate-spin" />
+                <Loader2
+                  size={40}
+                  className="text-white animate-spin h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] xl:h-[40px] xl:w-[40px]"
+                />
               ) : (
-                <SendHorizontal size={40} className="text-white" />
+                <SendHorizontal
+                  size={40}
+                  className="text-white h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] xl:h-[40px] xl:w-[40px]"
+                />
               )}
             </button>
           </form>

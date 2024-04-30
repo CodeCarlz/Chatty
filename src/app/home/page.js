@@ -30,7 +30,7 @@ const Page = () => {
   return (
     <>
       <div className="bg-[#EFF6FC] relative  flex justify-center items-center h-[100vh] w-screen">
-        <div className="context z-10  h-screen w-screen flex justify-center items-center gap-8 py-10 px-24">
+        <div className="context z-10  h-screen w-screen flex justify-center items-center gap-2 md:gap-4 lg:gap-6 py-10 px-2 sm:px-5 md:px-8 lg:px-12">
           <Sidebar getAllChatHandler={getAllChatHandler} />
           <Chat
             allchat={allChat}

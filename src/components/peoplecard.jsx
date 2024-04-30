@@ -47,7 +47,7 @@ const PeopleCard = ({ chat, modal, allUser }) => {
         modal ? "bg-gray-300 p-2 rounded-lg" : ""
       )}
     >
-      <div className=" h-[40px] w-[40px] rounded-full overflow-hidden">
+      <div className=" h-full w-[40px] md:w-[50px] rounded-full overflow-hidden">
         <Image
           src={
             filterAllUser != undefined
@@ -59,9 +59,9 @@ const PeopleCard = ({ chat, modal, allUser }) => {
           alt="profile"
         />
       </div>
-      <div className=" flex justify-between w-[330px]">
+      <div className=" flex justify-start gap-4 md:justify-between  w-full">
         <div className="text-gray-700  text-start">
-          <h1 className="font-semibold">
+          <h1 className="font-semibold whitespace-nowrap">
             {filterAllUser != undefined
               ? filterAllUser.name
               : chatFiltered?.name}
@@ -71,7 +71,7 @@ const PeopleCard = ({ chat, modal, allUser }) => {
           </p>
         </div>
         <div>
-          <p className="text-sm text-gray-500 pt-1">
+          <p className="text-sm text-gray-500 pt-1 line-clamp-2">
             {allUser ? "" : formattedDate}
           </p>
         </div>

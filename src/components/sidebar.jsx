@@ -36,8 +36,8 @@ const Sidebar = () => {
   console.log(user);
 
   return (
-    <div className=" h-full w-[133px] bg-gradient-to-l from-[#fafafa] to-[#4e54c8] rounded-2xl flex flex-col items-center justify-between py-10 shadow-[0px_4px_5px_2px_#32eed555]">
-      <div className=" w-[60px] h-[60px] rounded-full overflow-hidden border-2 border-blue-500">
+    <div className=" h-full w-[80px] md:w-[100px] lg:w-[133px] bg-gradient-to-l from-[#fafafa] to-[#4e54c8] rounded-2xl flex flex-col items-center justify-between py-10 shadow-[0px_4px_5px_2px_#32eed555]">
+      <div className=" w-[40px] h-[40px] md:w-[50px] md:h-[50px] lg:w-[60px] lg:h-[60px] rounded-full overflow-hidden border-2 border-blue-500">
         <Sheet className="relative">
           <SheetTrigger>
             <Image
