@@ -27,7 +27,12 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const Messagescontainer = ({ userId, closeChat, setCloseChat, allchat }) => {
+const Messagescontainer = ({
+  userId,
+  closeChat,
+  setCloseChat,
+  getAllChatHandler,
+}) => {
   const { user } = useUser();
   const [allMessages, setAllMessages] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -71,6 +76,7 @@ const Messagescontainer = ({ userId, closeChat, setCloseChat, allchat }) => {
   const deleteMessageHandler = async (chatId) => {
     try {
       await axiosInstance.delete(`chats/remove/${chatId}`);
+      getAllChatHandler();
     } catch (error) {
       console.log(error);
     }
@@ -97,32 +103,39 @@ const Messagescontainer = ({ userId, closeChat, setCloseChat, allchat }) => {
           {/* {allMessages.map((messenge, index) => console.log(messenge.sender._id !== user._id ? messenge.sender.avatar.url : null))} */}
           <div className=" flex flex-col ">
             <div className="flex flex-1">
-              <div className=" flex flex-1">
-                <div className=" w-[100px] flex justify-end items-center mr-2">
-                  <div className=" h-[60px] w-[60px] rounded-full overflow-hidden">
-                    <Image
-                      src={participantData?.avatar?.url}
-                      height="100"
-                      width="100"
-                      alt="profile"
-                    />
+              {participantData ? (
+                <div className=" flex flex-1">
+                  <div className=" w-[100px] flex justify-end items-center mr-2">
+                    <div className=" h-[60px] w-[60px] rounded-full overflow-hidden">
+                      <Image
+                        src={participantData?.avatar?.url}
+                        height="100"
+                        width="100"
+                        alt="profile"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className=" flex items-center flex-1">
-                  <div className="">
-                    <h1 className="text-lg font-semibold">
-                      {participantData?.name}
-                    </h1>
-                    <div className="flex gap-2 text-gray-500">
-                      <p>
-                        Online
-                        {/* <span>-</span> */}
-                      </p>
-                      {/* <p>Last seen, 2:02pm</p> */}
+                  <div className=" flex items-center flex-1">
+                    <div className="">
+                      <h1 className="text-lg font-semibold">
+                        {participantData?.name}
+                      </h1>
+                      <div className="flex gap-2 text-gray-500">
+                        <p>
+                          Online
+                          {/* <span>-</span> */}
+                        </p>
+                        {/* <p>Last seen, 2:02pm</p> */}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-1 items-center pl-5 ">
+                  <Loader2 size={40} className="animate-spin text-primary" />
+                </div>
+              )}
+
               <div className=" flex justify-end items-center pr-10 gap-5 flex-1 text-[#4e54c8]">
                 <Phone size={30} />
                 <Video size={35} />
