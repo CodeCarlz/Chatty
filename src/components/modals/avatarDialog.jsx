@@ -50,7 +50,7 @@ const Avatardialog = ({ getAllChatHandler }) => {
   return (
     <Dialog>
       <Toaster />
-      <DialogTrigger>
+      <DialogTrigger className="bg-red-500">
         <img src={user?.avatar?.url} alt="" className="h-full w-full" />
       </DialogTrigger>
       <DialogContent>

@@ -34,11 +34,14 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
     <div className="  h-full w-[300px] md:w-[350px] lg:w-[600px]  flex flex-col gap-5">
       <form className="bg-white h-[60px] min-h-[60px] rounded-3xl flex items-center px-5 shadow-[0px_4px_5px_2px_#32eed555] ">
         <button>
-          <Search size="30" className="text-gray-500" />
+          <Search
+            size="30"
+            className="text-gray-500 h-[20px] w-[20px] md:h-[25px] md:w-[25px] "
+          />
         </button>
         <input
           type="text"
-          className="h-full w-full bg-transparent  outline-none px-2  text-xl placeholder-gray-500 "
+          className="h-full w-full bg-transparent  outline-none px-2  text-xl placeholder-gray-500 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-lg"
           placeholder="Search"
           defaultValue=""
           onChange={handlePeopleChange}

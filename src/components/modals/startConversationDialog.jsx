@@ -82,7 +82,7 @@ const StartconversationDialog = ({
               onChange={allPeopleChangeHandler}
               className="text-black tracking-wider"
             />
-            <div className="flex flex-col gap-3 h-full overflow-y-scroll customScroll">
+            <div className="flex flex-col gap-3 h-full overflow-y-scroll customScroll  ">
               {(filteredAllUser.length > 0 ? filteredAllUser : allUser).map(
                 (chat) => (
                   <button

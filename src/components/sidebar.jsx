@@ -53,11 +53,11 @@ const Sidebar = () => {
               <SheetDescription className="">
                 <div className="flex flex-col gap-7 ">
                   <div className="flex justify-center items-center">
-                    <div className="h-[200px] w-[200px] rounded-full overflow-hidden">
+                    <div className="h-full w-[50%] md:w-[60%] rounded-full overflow-hidden p-2 md:p-3 lg:p-5">
                       <Avatardialog user={user} />
                     </div>
                   </div>
-                  <div className=" flex flex-col gap-3 text-black font-light ">
+                  <div className=" flex flex-col gap-3 text-xs md:text-sm text-black font-light ">
                     <div className="">
                       <h1 className="font-semibold text-sm">Your Name</h1>
                       <p>{user.name}</p>

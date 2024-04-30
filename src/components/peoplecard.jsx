@@ -44,7 +44,7 @@ const PeopleCard = ({ chat, modal, allUser }) => {
     <div
       className={cn(
         ` flex  items-center gap-3 `,
-        modal ? "bg-gray-300 p-2 rounded-lg" : ""
+        modal ? "bg-gray-300 p-2 rounded-lg w-[400px]" : ""
       )}
     >
       <div className=" h-full w-[40px] md:w-[50px] rounded-full overflow-hidden">
@@ -66,7 +66,7 @@ const PeopleCard = ({ chat, modal, allUser }) => {
               ? filterAllUser.name
               : chatFiltered?.name}
           </h1>
-          <p className="text-gray-400 text-ellipsis line-clamp-1 max-w-48">
+          <p className="text-gray-400 text-ellipsis line-clamp-1 w-[5ch] md:w-[10ch] lg:w-[18ch]">
             {chat?.lastMessage?.content}
           </p>
         </div>

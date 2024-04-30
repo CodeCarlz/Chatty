@@ -33,10 +33,10 @@ const Message = ({ allMessage }) => {
         </div>
         <p
           className={cn(
-            `font-size-16 word-wrap break-words inline-block  pre-wrap  px-5 py-2  h-fit w-fit`,
+            `font-size-16 word-wrap break-words inline-block  pre-wrap  px-5 py-2  h-fit w-fit max-w-[15ch] sm:max-w-[20ch] md:max-w-[60%] lg:max-w-[40ch] transition-all ease-in-out`,
             user.user._id !== allMessage.sender._id
               ? "rounded-tl-3xl rounded-r-3xl bg-gray-300 ml-10"
-              : "rounded-tr-3xl rounded-l-3xl  bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] mr-10 p-3 max-w-[15ch] sm:max-w-[20ch] md:max-w-[30ch] lg:max-w-[40ch]"
+              : "rounded-tr-3xl rounded-l-3xl  bg-gradient-to-tr from-[#4e54c8] to-[#b1b4f4] mr-10 p-3 "
           )}
         >
           {allMessage?.attachments?.map((attachment, index) => (
