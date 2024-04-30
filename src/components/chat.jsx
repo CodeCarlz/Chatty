@@ -6,89 +6,29 @@ import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/utils/api";
 import { useUser } from "@/context/Usercontext";
 import { Allan } from "next/font/google";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
+import StartconversationDialog from "./modals/startConversationDialog";
+
 // import Searchpeoplecard from "./searchPeoplecard";
 
-const Chat = ({ allchat, onUserIdChange, setCloseChat }) => {
+const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
   const user = useUser();
   // console.log(user);
-  const [filteredParticipants, setFilteredParticipants] = useState([]);
-  const [allUser, setAllUser] = useState([]);
-  const [filteredAllUser, setFilterAllUser] = useState([]);
-  const [startConversationId, setStartConversationId] = useState(null);
+
+  const [filterKeyword, setFilterKeyword] = useState("");
 
   const handlePeopleChange = async (e) => {
     const filter = e.target.value;
-    if (filter === "") {
-      setFilteredParticipants([]);
-      return;
-    }
-
-    const filtered = allchat.filter((chat) =>
-      chat.participants.some((participant) => {
-        const participantName = participant.name.toLowerCase();
-        return participantName.includes(filter.toLowerCase());
-      })
-    );
-
-    setFilteredParticipants(filtered);
+    setFilterKeyword(filter);
   };
 
-  const allPeopleChangeHandler = async (e) => {
-    const filter = e.target.value;
-    if (filter === "") {
-      setFilterAllUser([]);
-      return;
-    }
-
-    const filtered = allUser.filter((user) =>
-      user.name.toLowerCase().includes(filter.toLowerCase())
-    );
-
-    setFilterAllUser(filtered);
-  };
-
-  const startConversationHandler = async (userId) => {
-    console.log(userId);
-    try {
-      const response = await axiosInstance.post(`chats/c/${userId._id}`);
-      console.log(response.data.data);
-      // if (response) {
-      //   console.log(response.data.data);
-      //   const filteredResponse = response.data.data.participants.find(
-      //     (participant) => participant._id !== user.user._id
-      //   );
-      //   console.log(filteredResponse);
-      // }
-      onUserIdChange(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const allUserHandler = async () => {
-    try {
-      const response = await axiosInstance.get(`users`);
-      console.log(response.data);
-      const filteredUser = response.data.users.filter(
-        (userParticipants) =>
-          userParticipants.hasOwnProperty("name") &&
-          userParticipants._id !== user.user._id
+  const finalAllChats = !filterKeyword
+    ? allchat
+    : allchat.filter((chat) =>
+        chat.participants.some((participant) => {
+          const participantName = participant.name.toLowerCase();
+          return participantName.includes(filterKeyword.toLowerCase());
+        })
       );
-
-      setAllUser(filteredUser);
-      setFilterAllUser(filteredUser);
-      // setAllUser(response.data.users);
-    } catch (error) {}
-  };
 
   return (
     <div className="  h-full w-[650px]  flex flex-col gap-5">
@@ -111,54 +51,14 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat }) => {
       <div className=" h-[470px] max-h-[470px] bg-white rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
         <div className="flex  items-center justify-between ">
           <h1 className="text-2xl font-semibold">People</h1>
-
-          <Dialog>
-            <DialogTrigger>
-              <button onClick={() => allUserHandler()}>
-                <Plus />
-              </button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Start Conversation</DialogTitle>
-                <DialogDescription className="flex flex-col gap-3">
-                  <Input
-                    onChange={allPeopleChangeHandler}
-                    className="text-black tracking-wider"
-                  />
-                  <div className="flex flex-col gap-3 h-full overflow-y-scroll customScroll">
-                    {(filteredAllUser.length > 0
-                      ? filteredAllUser
-                      : allUser
-                    ).map((chat) => (
-                      <button
-                        className=""
-                        key={chat._id}
-                        onClick={() => {
-                          startConversationHandler(chat);
-                          setCloseChat(true);
-                          // onUserIdChange(chat);
-                          console.log(chat);
-                        }}
-                      >
-                        <DialogClose>
-                          <PeopleCard allUser={chat} modal={true} />
-                        </DialogClose>
-                        {console.log(chat)}
-                        {console.log(filteredAllUser)}
-                      </button>
-                    ))}
-                  </div>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <StartconversationDialog
+            getAllChatHandler={getAllChatHandler}
+            onUserIdChange={onUserIdChange}
+            setCloseChat={setCloseChat}
+          />
         </div>
         <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll  max-h-[280px]">
-          {(filteredParticipants.length == 0
-            ? allchat
-            : filteredParticipants
-          ).map((chat) => (
+          {finalAllChats?.map((chat) => (
             <button
               className=""
               key={chat._id}
