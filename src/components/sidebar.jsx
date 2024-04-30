@@ -22,6 +22,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Input } from "./ui/input";
+import Avatardialog from "./modals/avatarDialog";
+import Changepassworddialog from "./modals/changePasswordDialog";
 const Sidebar = () => {
   const { user } = useUser();
   const router = useRouter();
@@ -35,7 +38,7 @@ const Sidebar = () => {
   return (
     <div className=" h-full w-[133px] bg-gradient-to-l from-[#fafafa] to-[#4e54c8] rounded-2xl flex flex-col items-center justify-between py-10 shadow-[0px_4px_5px_2px_#32eed555]">
       <div className=" w-[60px] h-[60px] rounded-full overflow-hidden border-2 border-blue-500">
-        <Sheet>
+        <Sheet className="relative">
           <SheetTrigger>
             <Image
               src={user?.avatar?.url}
@@ -46,16 +49,12 @@ const Sidebar = () => {
           </SheetTrigger>
           <SheetContent side={"left"}>
             <SheetHeader>
-              <SheetTitle className="text-3xl">Profile</SheetTitle>
-              <SheetDescription>
-                <div className="flex flex-col gap-7">
+              {/* <SheetTitle className="text-3xl">Profile</SheetTitle> */}
+              <SheetDescription className="">
+                <div className="flex flex-col gap-7 ">
                   <div className="flex justify-center items-center">
                     <div className="h-[200px] w-[200px] rounded-full overflow-hidden">
-                      <img
-                        src={user?.avatar?.url}
-                        alt=""
-                        className="h-full w-full"
-                      />
+                      <Avatardialog user={user} />
                     </div>
                   </div>
                   <div className=" flex flex-col gap-3 text-black font-light ">
@@ -67,12 +66,14 @@ const Sidebar = () => {
                       <h1 className="font-semibold text-sm">user ID</h1>
                       <p>{user._id}</p>
                     </div>
+
                     <div className="">
                       <h1 className="font-semibold text-sm">About</h1>
                       <p>Hey there! I am using Chatty.</p>
                     </div>
                   </div>
                 </div>
+                <Changepassworddialog />
               </SheetDescription>
             </SheetHeader>
           </SheetContent>
