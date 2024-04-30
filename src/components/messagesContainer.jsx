@@ -263,8 +263,11 @@ const Messagescontainer = ({
         </>
       ) : (
         <div className=" h-screen w-full flex flex-col  justify-start pt-10 items-center gap-5">
-          <div className="h-[300px] w-[300px] rounded-full overflow-hidden bg-gray-200 flex justify-center items-center">
-            <MessagesSquare size={200} className="text-gray-500" />
+          <div className="h-[200px] w-[200px] md:h-[250px] md:w-[250px] rounded-full overflow-hidden bg-gray-200 flex justify-center items-center">
+            <MessagesSquare
+              size={200}
+              className="text-gray-500 h-[100px] md:h-[170px]"
+            />
           </div>
           <div className="text-center">
             <h1 className="text-3xl mb-5 ">Chatty Web</h1>
