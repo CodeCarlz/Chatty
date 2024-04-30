@@ -1,5 +1,4 @@
 "use client";
-import { LocalStorageService } from "@/lib/utils";
 import { axiosInstance } from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -16,6 +15,7 @@ export const UserProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       const response = await axiosInstance.get("users/showMe");
+      console.log(response.data.user);
       setUser(response.data.user);
     } catch (error) {
       setUser(null);
@@ -31,6 +31,7 @@ export const UserProvider = ({ children }) => {
     if (token) {
       fetchUser();
       setToken(token);
+      router.push(`/home`);
     }
   }, []);
 
@@ -40,7 +41,7 @@ export const UserProvider = ({ children }) => {
   //   };
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <UserContext.Provider value={{ user, fetchUser }}>
       {user && token ? children : null}
     </UserContext.Provider>
   );
