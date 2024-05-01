@@ -53,7 +53,7 @@ const Sidebar = () => {
               <SheetDescription className="">
                 <div className="flex flex-col gap-7 ">
                   <div className="flex justify-center items-center">
-                    <div className="h-full w-[50%] md:w-[60%] rounded-full overflow-hidden p-2 md:p-3 lg:p-5">
+                    <div className="h-full w-[50%] md:w-[60%] rounded-full overflow-hidden p-1 md:p-3 lg:p-5  ">
                       <Avatardialog user={user} />
                     </div>
                   </div>
