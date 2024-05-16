@@ -1,10 +1,22 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/context/Usercontext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { CircleX } from "lucide-react";
 
 const Message = ({ allMessage }) => {
   const user = useUser();
+  const [isModalImage, setIsModalImage] = useState(false);
 
   return (
     <>
@@ -40,15 +52,31 @@ const Message = ({ allMessage }) => {
           )}
         >
           {allMessage?.attachments?.map((attachment, index) => (
-            <div
-              key={index}
-              className="h-[150px] w-f overflow-hidden bg-green-500"
-            >
-              <img
-                src={`${attachment.url}`}
-                alt=""
-                className="h-full w-full object-contain"
-              />
+            <div key={index} className="h-[150px] w-f overflow-hidden">
+              <Dialog>
+                <DialogTrigger className="w-full h-full">
+                  <img
+                    src={`${attachment.url}`}
+                    alt="Attachments"
+                    className="h-full w-full object-contain"
+                  />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="relative">
+                    {/* <DialogTitle></DialogTitle> */}
+                    <DialogClose className="absolute -top-5 -right-5 text-purple-600">
+                      <CircleX />
+                    </DialogClose>
+                    <DialogDescription className="pt-2">
+                      <img
+                        src={`${attachment.url}`}
+                        alt="attachments"
+                        className="w-full h-full"
+                      />
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
           ))}
           {allMessage?.content}
