@@ -1,5 +1,10 @@
 import { UserProvider } from "@/context/Usercontext";
+import SocketProvider from "@/context/socketcontext";
 
 export default function HomeLayout({ children }) {
-  return <UserProvider>{children}</UserProvider>;
+  return (
+    <UserProvider>
+      <SocketProvider>{children}</SocketProvider>
+    </UserProvider>
+  );
 }
