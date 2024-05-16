@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { Input } from "../ui/input";
 import { axiosInstance } from "@/utils/api";
 import { useUser } from "@/context/Usercontext";
@@ -17,7 +17,7 @@ import PeopleCard from "../peoplecard";
 
 const StartconversationDialog = ({
   getAllChatHandler,
-  onUserIdChange,
+  setOpenChat,
   setCloseChat,
 }) => {
   const user = useUser();
@@ -60,7 +60,7 @@ const StartconversationDialog = ({
       const response = await axiosInstance.post(`chats/c/${userId._id}`);
       console.log(response.data.data);
 
-      onUserIdChange(response.data.data);
+      setOpenChat(response.data.data);
       getAllChatHandler();
     } catch (error) {
       console.log(error);
@@ -82,6 +82,7 @@ const StartconversationDialog = ({
               onChange={allPeopleChangeHandler}
               className="text-black tracking-wider"
             />
+
             <div className="flex flex-col gap-3 h-full overflow-y-scroll customScroll  ">
               {(filteredAllUser.length > 0 ? filteredAllUser : allUser).map(
                 (chat) => (
@@ -90,16 +91,13 @@ const StartconversationDialog = ({
                     key={chat._id}
                     onClick={() => {
                       startConversationHandler(chat);
-                      setCloseChat(true);
+                      setOpenChat(null);
                       // onUserIdChange(chat);
-                      console.log(chat);
                     }}
                   >
                     <DialogClose>
                       <PeopleCard allUser={chat} modal={true} />
                     </DialogClose>
-                    {console.log(chat)}
-                    {console.log(filteredAllUser)}
                   </button>
                 )
               )}
