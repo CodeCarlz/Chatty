@@ -7,19 +7,24 @@ import { axiosInstance } from "@/utils/api";
 import { useUser } from "@/context/Usercontext";
 import { Allan } from "next/font/google";
 import StartconversationDialog from "./modals/startConversationDialog";
+import { useSocket } from "@/context/socketcontext";
+import { socketEvent } from "@/utils/socketConfig";
+import { io } from "socket.io-client";
+import Startgroupdialog from "./modals/startGroupDialog";
 
-// import Searchpeoplecard from "./searchPeoplecard";
-
-const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
-  const user = useUser();
-  // console.log(user);
+const Chat = ({
+  allchat,
+  setOpenChat,
+  getAllChatHandler,
+  allMessages,
+  setAllMessages,
+  setAllchat,
+  openChat,
+}) => {
+  const { user } = useUser();
+  const { socket, setIsConnected, hisTyping, setHisTyping } = useSocket();
 
   const [filterKeyword, setFilterKeyword] = useState("");
-
-  const handlePeopleChange = async (e) => {
-    const filter = e.target.value;
-    setFilterKeyword(filter);
-  };
 
   const finalAllChats = !filterKeyword
     ? allchat
@@ -29,6 +34,87 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
           return participantName.includes(filterKeyword.toLowerCase());
         })
       );
+  const handlePeopleChange = async (e) => {
+    const filter = e.target.value;
+    setFilterKeyword(filter);
+  };
+
+  const onMessageRecieve = (newMessage) => {
+    setAllMessages((allMessages) => [newMessage, ...allMessages]);
+    console.log(newMessage);
+
+    // Update the allchat array with the new lastMessage
+    setAllchat((allchat) => {
+      // Map over each chat object in the allchat array
+      return allchat.map((chat) => {
+        // Check if the _id of the chat object matches the chat property of the new message
+        if (chat._id === newMessage.chat) {
+          // If there's a match, return a new chat object with the lastMessage updated to the new message
+          return { ...chat, lastMessage: newMessage };
+        }
+        // If there's no match, return the chat object unchanged
+        return chat;
+      });
+    });
+  };
+
+  const onConnected = (data) => {
+    console.log("connected now");
+    setIsConnected(true);
+    getAllChatHandler();
+  };
+  const onDisconnect = (data) => {
+    console.log(data);
+  };
+  const onJoinChat = (chatId) => {
+    socket.emit(socketEvent.JOIN_CHAT_EVENT, chatId);
+  };
+
+  const onLeaveChat = (data) => {
+    getAllChatHandler();
+    // console.log(allchat, data);
+    // console.log("Data received:", data);
+    // console.log("All chats:", allchat);
+    // const updatedAllChat = allchat.filter((chat) => chat._id !== data._id);
+    // console.log("Filtered chats:", updatedAllChat);
+    // setAllchat(updatedAllChat);
+    // console.log("Updated allchat:", allchat);
+  };
+
+  const onNewChat = (data) => {
+    setAllchat((allchat) => [data, ...allchat]);
+  };
+  const onStopTyping = (data) => {
+    setHisTyping(false);
+  };
+  const onTyping = (data) => {
+    setHisTyping(true);
+  };
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    socket.on(socketEvent.CONNECTED_EVENT, onConnected);
+    socket.on(socketEvent.DISCONNECT_EVENT, onDisconnect);
+
+    socket.on(socketEvent.LEAVE_CHAT_EVENT, onLeaveChat);
+    socket.on(socketEvent.MESSAGE_RECEIVED_EVENT, onMessageRecieve);
+    socket.on(socketEvent.NEW_CHAT_EVENT, onNewChat);
+    socket.on(socketEvent.STOP_TYPING_EVENT, onStopTyping);
+    socket.on(socketEvent.TYPING_EVENT, onTyping);
+
+    return () => {
+      socket.off(socketEvent.CONNECTED_EVENT, onConnected);
+      socket.off(socketEvent.DISCONNECT_EVENT, onDisconnect);
+
+      socket.off(socketEvent.LEAVE_CHAT_EVENT, onLeaveChat);
+      socket.off(socketEvent.MESSAGE_RECEIVED_EVENT, onMessageRecieve);
+      socket.off(socketEvent.NEW_CHAT_EVENT, onNewChat);
+      socket.off(socketEvent.STOP_TYPING_EVENT, onStopTyping);
+      socket.off(socketEvent.TYPING_EVENT, onTyping);
+    };
+  }, [socket]);
 
   return (
     <div className="  h-full w-[300px] md:w-[350px] lg:w-[600px]  flex flex-col gap-5">
@@ -47,34 +133,62 @@ const Chat = ({ allchat, onUserIdChange, setCloseChat, getAllChatHandler }) => {
           onChange={handlePeopleChange}
         />
       </form>
-      <div className="bg-white h-[300px] max-h-[300px] rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
-        <h1 className="text-sm md:text-lg font-semibold">Groups</h1>
-        <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll"></div>
+      <div className="bg-white min-h-[150px] max-h-[200px] rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
+        <div className="flex  items-center justify-between ">
+          <h1 className="text-sm md:text-lg font-semibold">Groups</h1>
+          <Startgroupdialog
+            getAllChatHandler={getAllChatHandler}
+            setOpenChat={setOpenChat}
+            // setOpenChat={setCloseChat}
+          />
+        </div>
+        <div className="flex flex-col gap-3 pt-3 overflow-y-scroll h-[300px] customScroll">
+          {finalAllChats
+            ?.filter((chat) => chat.isGroupChat)
+            .map((chat) => (
+              <button
+                className=""
+                key={chat._id}
+                onClick={() => {
+                  setOpenChat(chat);
+                  onJoinChat(chat._id);
+                  // setCloseChat(true);
+                  // handleJoinChat(chat._id);
+
+                  console.log(chat);
+                }}
+              >
+                <PeopleCard chat={chat} />
+              </button>
+            ))}
+        </div>
       </div>
-      <div className=" h-[470px] max-h-[470px] bg-white rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
+      <div className=" min-h-[200px] max-h-[470px] bg-white rounded-3xl flex flex-col p-5 shadow-[0px_4px_5px_2px_#32eed555]">
         <div className="flex  items-center justify-between ">
           <h1 className="text-sm md:text-lg font-semibold">People</h1>
           <StartconversationDialog
             getAllChatHandler={getAllChatHandler}
-            onUserIdChange={onUserIdChange}
-            setCloseChat={setCloseChat}
+            setOpenChat={setOpenChat}
+            // setOpenChat={setCloseChat}
           />
         </div>
-        <div className="flex flex-col gap-3 pt-3 overflow-y-scroll customScroll  max-h-[280px]">
-          {finalAllChats?.map((chat) => (
-            <button
-              className=""
-              key={chat._id}
-              onClick={() => {
-                onUserIdChange(chat);
-                setCloseChat(true);
-                console.log(chat);
-              }}
-            >
-              <PeopleCard chat={chat} />
-              {console.log(chat)}
-            </button>
-          ))}
+        <div className="flex flex-col gap-3 pt-3 overflow-y-scroll h-[330px] customScroll">
+          {finalAllChats
+            ?.filter((chat) => !chat.isGroupChat)
+            .map((chat) => (
+              <button
+                className=""
+                key={chat._id}
+                onClick={() => {
+                  setOpenChat(chat);
+                  onJoinChat(chat._id);
+                  // setCloseChat(true);
+                  // handleJoinChat(chat._id);
+                }}
+              >
+                <PeopleCard chat={chat} />
+              </button>
+            ))}
         </div>
       </div>
     </div>
