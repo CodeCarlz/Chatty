@@ -5,15 +5,14 @@ import Sidebar from "@/components/sidebar";
 import Messagescontainer from "@/components/messagesContainer";
 import { UserProvider, useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
+import { io } from "socket.io-client";
 
 const Page = () => {
   const [allChat, setAllchat] = useState([]);
-  const [userId, setUserId] = useState({});
+  const [openChat, setOpenChat] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [closeChat, setCloseChat] = useState(false);
-  console.log(userId);
+  const [allMessages, setAllMessages] = useState([]);
 
-  console.log(allChat);
   const getAllChatHandler = async () => {
     try {
       const response = await axiosInstance.get("/chats");
@@ -34,21 +33,27 @@ const Page = () => {
           <Sidebar getAllChatHandler={getAllChatHandler} />
           <Chat
             allchat={allChat}
-            onUserIdChange={setUserId}
-            closeChat={closeChat}
-            setCloseChat={setCloseChat}
+            setAllchat={setAllchat}
+            setOpenChat={setOpenChat}
+            openChat={openChat}
+            // closeChat={closeChat}
+            // setCloseChat={setCloseChat}
+            allMessages={allMessages}
+            setAllMessages={setAllMessages}
             getAllChatHandler={getAllChatHandler}
           />
           <Messagescontainer
             allchat={allChat}
-            userId={userId}
-            closeChat={closeChat}
-            setCloseChat={setCloseChat}
+            openChat={openChat}
+            // closeChat={closeChat}
+            allMessages={allMessages}
+            setAllMessages={setAllMessages}
+            setOpenChat={setOpenChat}
             getAllChatHandler={getAllChatHandler}
           />
         </div>
 
-        <div className="area absolute">
+        <div className="area absolute ">
           <ul className="circles">
             <li></li>
             <li></li>
