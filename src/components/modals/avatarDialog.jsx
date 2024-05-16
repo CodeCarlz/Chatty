@@ -17,7 +17,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useUser } from "@/context/Usercontext";
 
 const Avatardialog = ({ getAllChatHandler }) => {
-  const { user, fetchUser } = useUser();
+  const { user, fetchUser, setUser } = useUser();
   const [image, setImage] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
   console.log(user);
@@ -35,7 +35,8 @@ const Avatardialog = ({ getAllChatHandler }) => {
         setUploadSuccess(true);
         toast.success(response.data.message);
       }
-      fetchUser();
+      setUser(response.data.data);
+      // fetchUser();
     } catch (error) {
       console.log(error);
     } finally {
