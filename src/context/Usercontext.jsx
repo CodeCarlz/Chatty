@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
   //   };
 
   return (
-    <UserContext.Provider value={{ user, fetchUser }}>
+    <UserContext.Provider value={{ user, fetchUser, setUser }}>
       {user && token ? children : null}
     </UserContext.Provider>
   );
