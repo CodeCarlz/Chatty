@@ -2,18 +2,22 @@ import { useUser } from "@/context/Usercontext";
 import { axiosInstance } from "@/utils/api";
 import EmojiPicker from "emoji-picker-react";
 import {
+  Dot,
+  Ellipsis,
   EllipsisVertical,
+  File,
   Loader2,
   MessagesSquare,
   Paperclip,
   Phone,
   SendHorizontal,
   Smile,
+  Users,
   Video,
   cat,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Message from "./message";
 import { Button } from "./ui/button";
 import {
@@ -26,24 +30,39 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { connect, io } from "socket.io-client";
+import { useSocket } from "@/context/socketcontext";
+import { socketEvent } from "@/utils/socketConfig";
 
 const Messagescontainer = ({
-  userId,
+  openChat,
   closeChat,
-  setCloseChat,
+  setOpenChat,
   getAllChatHandler,
+  allMessages,
+  setAllMessages,
 }) => {
   const { user } = useUser();
-  const [allMessages, setAllMessages] = useState([]);
+  const { socket, isConnected, hisTyping, setHisTyping } = useSocket();
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [sentMessage, setSentMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [selfTyping, setSelfTyping] = useState(false);
+  const [attachment, setAttachment] = useState("");
 
-  const getAllMessage = async (userId) => {
+  const typingTimeoutRef = useRef();
+  const msgeInputRef = useRef(null);
+
+  const getCursorPosition = (inputRef) => {
+    if (!inputRef) return null;
+    return inputRef.selectionStart;
+  };
+  const getAllMessage = async (chatId) => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(`messages/${userId}`);
+      const response = await axiosInstance.get(`messages/${chatId}`);
       setAllMessages(response.data.data);
     } catch (error) {
       console.log(error);
@@ -52,25 +71,39 @@ const Messagescontainer = ({
     }
   };
 
-  const sendMessage = async (userId, message) => {
-    console.log(userId);
+  const sendMessage = async (chatId, message) => {
     setIsSending(true);
+    const formData = new FormData();
+
+    if (message) {
+      formData.append("content", message);
+    }
+    formData.append("attachments", attachment);
+
     try {
-      const response = await axiosInstance.post(`messages/${userId._id}`, {
-        content: message,
-      });
+      const response = await axiosInstance.post(
+        `messages/${chatId._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setAllMessages((allMessages) => [response.data.data, ...allMessages]);
     } catch (error) {
       console.log(error);
     } finally {
       setIsSending(false);
+      setSentMessage("");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await sendMessage(userId, sentMessage);
+    await sendMessage(openChat, sentMessage);
     setSentMessage("");
+    getAllChatHandler();
   };
 
   const deleteMessageHandler = async (chatId) => {
@@ -81,48 +114,113 @@ const Messagescontainer = ({
       console.log(error);
     }
   };
-  useEffect(() => {
-    if (userId) {
-      console.log(userId);
-      getAllMessage(userId._id);
-    }
-  }, [userId]);
 
-  console.log(user);
-  console.log(userId);
-  const participantData = userId?.participants?.find(
+  const handleOnMessageChange = (e) => {
+    // Update the message state with the current input value
+    setSentMessage(e.target.value);
+
+    // If socket doesn't exist or isn't connected, exit the function
+    if (!socket || !isConnected) return;
+
+    // Check if the user isn't already set as typing
+    if (!selfTyping) {
+      // Set the user as typing
+      setSelfTyping(true);
+
+      // Emit a typing event to the server for the current chat
+      socket.emit(socketEvent.TYPING_EVENT, openChat._id);
+    }
+
+    // Clear the previous timeout (if exists) to avoid multiple setTimeouts from running
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Define a length of time (in milliseconds) for the typing timeout
+    const timerLength = 2000;
+
+    // Set a timeout to stop the typing indication after the timerLength has passed
+    typingTimeoutRef.current = setTimeout(() => {
+      // Emit a stop typing event to the server for the current chat
+      socket.emit(socketEvent.STOP_TYPING_EVENT, openChat._id);
+
+      // Reset the user's typing state
+      setSelfTyping(false);
+    }, timerLength);
+  };
+
+  const onEmojiClick = (emojiObject) => {
+    if (msgeInputRef) {
+      const position = getCursorPosition(msgeInputRef.current);
+      if (position) {
+        let modifiedMessage =
+          sentMessage.slice(0, position) +
+          emojiObject.emoji +
+          sentMessage.slice(position);
+        setSentMessage(modifiedMessage);
+      } else {
+        setSentMessage((prev) => `${prev}  ${emojiObject.emoji}`);
+      }
+    }
+
+    setShowEmojiPicker(false);
+  };
+
+  useEffect(() => {
+    if (openChat) {
+      getAllMessage(openChat._id);
+
+      socket.emit(socketEvent.JOIN_CHAT_EVENT, openChat._id);
+    }
+  }, [openChat, socket]);
+
+  const participantData = openChat?.participants?.find(
     (participant) => participant._id !== user._id
   );
-  console.log(participantData);
+
+  const groupParticipants =
+    openChat?.isGroupChat === true
+      ? openChat?.participants.filter(
+          (participant) => participant._id !== user._id
+        )
+      : null;
 
   return (
     <div className="bg-white h-full w-full rounded-3xl grid grid-rows-[100px_1fr_90px] overflow-hidden shadow-[0px_4px_5px_2px_#32eed555] ">
-      {closeChat ? (
+      {openChat ? (
         <>
-          {/* Profile Container */}
-          {/* {allMessages.map((messenge, index) => console.log(messenge.sender._id !== user._id ? messenge.sender.avatar.url : null))} */}
           <div className=" flex flex-col ">
             <div className="flex flex-1">
               {participantData ? (
                 <div className=" flex flex-1 pl-5 md:pl-3">
                   <div className=" w-[45px] md:w-[60px] lg:w-[80px]   flex justify-center items-center  ">
                     <div className=" h-[40px] w-[40px] md:h-[50px] md:w-[50px] lg:h-[60px] lg:w-[60px] rounded-full overflow-hidden">
-                      <Image
-                        src={participantData?.avatar?.url}
-                        height="100"
-                        width="100"
-                        alt="profile"
-                      />
+                      {openChat.isGroupChat === true ? (
+                        <Users size={30} className="h-full w-full" />
+                      ) : (
+                        <Image
+                          src={participantData?.avatar?.url}
+                          height="100"
+                          width="100"
+                          alt="profile"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className=" flex items-center flex-1">
                     <div className="">
                       <h1 className="text-xs md:text-sm lg:text-lg font-semibold whitespace-nowrap ">
-                        {participantData?.name}
+                        {openChat.isGroupChat
+                          ? openChat.name
+                          : participantData?.name}
                       </h1>
                       <div className="flex gap-2 text-gray-500">
-                        <p className="text-xs md:text-sm">
-                          Online
+                        <p className="text-xs md:text-sm max-w-[40ch] text-ellipsis line-clamp-1">
+                          {openChat?.isGroupChat === true
+                            ? groupParticipants
+                                .map((participant) => participant.name)
+                                .join(", ")
+                            : "Online"}
                           {/* <span>-</span> */}
                         </p>
                         {/* <p>Last seen, 2:02pm</p> */}
@@ -157,7 +255,7 @@ const Messagescontainer = ({
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <button onClick={() => setCloseChat(false)}>
+                      <button onClick={() => setOpenChat(null)}>
                         Close Chat
                       </button>
                     </DropdownMenuItem>
@@ -165,9 +263,10 @@ const Messagescontainer = ({
                     <DropdownMenuItem>
                       <button
                         onClick={() => {
-                          deleteMessageHandler(userId._id);
+                          deleteMessageHandler(openChat._id);
                           setAllMessages([]);
-                          setCloseChat(false);
+                          setOpenChat(null);
+                          getAllChatHandler;
                         }}
                       >
                         Delete Chat
@@ -182,7 +281,7 @@ const Messagescontainer = ({
           </div>
 
           {/* Chat Container */}
-          <div className="customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10 ">
+          <div className="relative customScroll flex flex-col-reverse overflow-y-auto  gap-7 pb-10  ">
             {!loading &&
               allMessages.map((allMessage) =>
                 allMessage.sender._id != user._id ? (
@@ -200,6 +299,34 @@ const Messagescontainer = ({
                 <Loader2 size={40} className="animate-spin text-primary" />
               </div>
             )}
+            {hisTyping ? (
+              <h1 className="absolute bottom-0 left-16 flex items-start text-gray-500">
+                {/* <p className="text-xs ">Typing</p> */}
+                <Dot
+                  className="animate-bounce  transition-all "
+                  style={{
+                    animationDuration: "1s",
+                    animationTimingFunction: "ease-in-out",
+                  }}
+                />
+                <Dot
+                  className="animate-bounce  transition-all"
+                  style={{
+                    animationDuration: "1.2s",
+                    animationTimingFunction: "ease-in",
+                  }}
+                />
+                <Dot
+                  className="animate-bounce  transition-all"
+                  style={{
+                    animationDuration: "1.4s",
+                    animationTimingFunction: "ease-in",
+                  }}
+                />
+              </h1>
+            ) : (
+              ""
+            )}
           </div>
 
           {/* Send container */}
@@ -209,19 +336,34 @@ const Messagescontainer = ({
           >
             <div className=" flex items-center flex-1">
               <div className="flex items-center justify-center flex-1 bg-[#dcecfc] h-[70px] rounded-2xl">
-                <button>
-                  <Paperclip
-                    size={30}
-                    className="mx-2 md:mx-3 lg:mx-5 h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] "
+                <div className="">
+                  <input
+                    type="file"
+                    className="fixed left-[9999px]"
+                    id="attachment"
+                    onChange={(e) => {
+                      setAttachment(e.target.files[0]);
+                      setSentMessage((prev) => [prev + e.target.files[0].name]);
+                    }}
                   />
-                </button>
+                  <label htmlFor="attachment">
+                    <Paperclip
+                      size={30}
+                      className="mx-2 md:mx-3 lg:mx-5 h-[20px] w-[20px] md:h-[25px] md:w-[25px] lg:h-[30px] lg:w-[30px] "
+                    />
+                  </label>
+                </div>
                 <div className="flex-1  h-full">
                   <input
+                    ref={msgeInputRef}
                     type="text"
                     placeholder="Type Your Message Here..."
                     className="w-full h-full md:px-1  outline-none text-lg bg-transparent placeholder-gray-500 placeholder:text-xs md:placeholder:text-sm lg:placeholder:text-lg"
                     value={sentMessage}
-                    onChange={(e) => setSentMessage(e.target.value)}
+                    onChange={(e) => {
+                      // setSentMessage(e.target.value);
+                      handleOnMessageChange(e);
+                    }}
                   />
                 </div>
 
@@ -238,7 +380,9 @@ const Messagescontainer = ({
                     />
                   </button>
                   <div className="absolute bottom-10 right-12  bg-red-500 transition ease-in  ">
-                    {showEmojiPicker && <EmojiPicker />}
+                    {showEmojiPicker && (
+                      <EmojiPicker onEmojiClick={onEmojiClick} />
+                    )}
                   </div>
                 </div>
               </div>
