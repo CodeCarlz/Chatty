@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { useUser } from "@/context/Usercontext";
 import { cn } from "@/lib/utils";
+import { Users } from "lucide-react";
 
 const PeopleCard = ({ chat, modal, allUser }) => {
   const { user } = useUser();
@@ -16,7 +17,10 @@ const PeopleCard = ({ chat, modal, allUser }) => {
     (participant) => participant._id != user._id
   );
 
-  console.log(allUser);
+  const groupFiltered = chat?.isGroupChat === true ? chat?.name : null;
+
+  console.log(groupFiltered);
+
   // const filteredAllUser = allUser?.find((obj) =>
   //   Object.values(obj).every((value) => value !== undefined)
   // );
@@ -48,21 +52,29 @@ const PeopleCard = ({ chat, modal, allUser }) => {
       )}
     >
       <div className=" h-full w-[40px] md:w-[50px] rounded-full overflow-hidden">
-        <Image
-          src={
-            filterAllUser != undefined
-              ? filterAllUser.avatar.url
-              : chatFiltered?.avatar?.url
-          }
-          height="100"
-          width="100"
-          alt="profile"
-        />
+        {chat?.isGroupChat === true ? (
+          <div className="h-full w-full ">
+            <Users size={20} className="h-full w-full" />
+          </div>
+        ) : (
+          <Image
+            src={
+              filterAllUser != undefined
+                ? filterAllUser.avatar.url
+                : chatFiltered?.avatar?.url
+            }
+            height="100"
+            width="100"
+            alt="profile"
+          />
+        )}
       </div>
       <div className=" flex justify-start gap-4 md:justify-between  w-full">
         <div className="text-gray-700  text-start">
           <h1 className="font-semibold whitespace-nowrap">
-            {filterAllUser != undefined
+            {chat?.isGroupChat === true
+              ? groupFiltered
+              : filterAllUser != undefined
               ? filterAllUser.name
               : chatFiltered?.name}
           </h1>
