@@ -58,7 +58,7 @@ const Page = () => {
     <>
       <Toaster />
       <div className="relative  flex justify-center items-center h-[100vh] w-screen">
-        <div className="context z-10 flex flex-col gap-10 justify-start py-10 items-center  bg-white h-[70vh] w-96 rounded-xl">
+        <div className="context z-10 flex flex-col gap-10 justify-start py-10 items-center  bg-white h-fit w-96 rounded-xl">
           <h1 className="text-black text-3xl font-extrabold">Register</h1>
           <form
             id="login-Form"

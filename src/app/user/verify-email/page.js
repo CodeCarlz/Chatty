@@ -38,7 +38,7 @@ const Verification = () => {
   return (
     <>
       <div className=" relative flex justify-center items-center h-[100vh] w-screen">
-        <div className="context z-10 flex flex-col gap-2 justify-start py-10 items-center  bg-white h-[40vh] w-96 rounded-xl">
+        <div className="context z-10 flex flex-col gap-2 justify-start py-10 items-center  bg-white h-fit w-96 rounded-xl">
           {isLoading ? (
             <div className="  h-full w-full flex justify-center items-center">
               <LoaderIcon className="animate-spin " size={100} />
