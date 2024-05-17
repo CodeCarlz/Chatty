@@ -11,7 +11,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "chatty.evileyedev.in",
-        port: "5000",
+        port: "",
         pathname: "/**",
       },
       {
@@ -30,6 +30,12 @@ const nextConfig = {
         protocol: "http",
         hostname: "chatty-backend.evileyedev.in",
         port: "5000",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "chatty-backend.evileyedev.in",
+        port: "",
         pathname: "/**",
       },
     ],
