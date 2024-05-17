@@ -1,14 +1,12 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
 import { LoaderIcon, MailCheck, MailX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/utils/api";
 import Link from "next/link";
 
-const Page = () => {
+const Verification = () => {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [response, setResponse] = useState(null);
@@ -59,7 +57,7 @@ const Page = () => {
                     Your email was Successfully verified. You can continue using
                     the application.
                   </p>
-                  <Link href="#" className="text-purple-400">
+                  <Link href="/" className="text-purple-400">
                     Login Here
                   </Link>
                 </>
@@ -102,5 +100,11 @@ const Page = () => {
     </>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Verification />
+  </Suspense>
+);
 
 export default Page;
