@@ -369,6 +369,7 @@ const Messagescontainer = ({
 
                 <div className="relative">
                   <button
+                    type="button"
                     onClick={(e) => {
                       setShowEmojiPicker(!showEmojiPicker);
                       e.preventDefault();
