@@ -27,6 +27,7 @@ const Page = () => {
   const signupHandler = async () => {
     try {
       const response = await axiosInstance.post("auth/register", signUpDetails);
+      console.log(response);
       if (response.status == 201) {
         toast.success(response.data.message);
         console.log("asd");
@@ -40,6 +41,7 @@ const Page = () => {
       });
     } catch (error) {
       toast.error(error.response.data.message);
+      console.log(error.response);
     }
   };
 
