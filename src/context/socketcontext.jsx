@@ -11,7 +11,7 @@ const SocketProvider = ({ children }) => {
   const [hisTyping, setHisTyping] = useState(false);
 
   useEffect(() => {
-    const socket = io("http://chatty-backend.evileyedev.in:5000", {
+    const socket = io("https://chatty-backend.evileyedev.in/", {
       withCredentials: true,
       auth: { user_id: user._id },
     });
